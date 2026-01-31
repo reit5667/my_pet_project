@@ -1,6 +1,7 @@
-from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
 from datetime import datetime
+
+from airflow import DAG
+from airflow.operators.python import PythonOperator
 
 def print_hello():
     return 'Hello, Airflow!'
@@ -11,9 +12,9 @@ default_args = {
 }
 
 dag = DAG(
-    'example_dag',
+    "example_dag",
     default_args=default_args,
-    schedule_interval=None,
+    schedule=None,
 )
 
 task = PythonOperator(

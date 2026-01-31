@@ -2,7 +2,12 @@
 FROM apache/airflow:latest
 
 COPY requirements.txt /tmp/requirements.txt
+COPY entrypoint_airflow.sh /entrypoint_airflow.sh
 
-# В образе apache/airflow пакеты нужно ставить от пользователя airflow, не от root
+USER root
+RUN chmod +x /entrypoint_airflow.sh
 USER airflow
+
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+ENTRYPOINT ["/entrypoint_airflow.sh"]

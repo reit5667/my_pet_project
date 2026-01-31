@@ -13,6 +13,8 @@ services:
     networks:
       - my_network
 
+  # Airflow UI: http://localhost:8080 — логин admin, пароль admin (задаётся entrypoint).
+  # Если пароль не подходит: docker compose exec airflow airflow users reset-password -u admin -p admin
   airflow:
     build: .
     image: my_airflow:latest
