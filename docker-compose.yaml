@@ -1,16 +1,43 @@
-version: '3.8'  # Версия формата файла, стандартная
-
-services:       # Здесь мы перечисляем, какие "капсулы" нам нужны
-  db:           # Название сервиса (придумали сами, пусть будет db)
-    image: postgres:15  # Какой чертеж брать. Postgres 15-й версии
-    container_name: my_postgres_db  # Как контейнер будет называться в Docker Desktop
-    environment:        # Переменные окружения (настройки внутри капсулы)
-      POSTGRES_USER: admin      # Логин администратора
-      POSTGRES_PASSWORD: root   # Пароль (для локалки сойдет простой)
-      POSTGRES_DB: analytics_db # Имя базы данных, которая создастся сразу
+services:
+  db:
+    image: postgres:15 
+    container_name: my_postgres_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: analytics_db
     ports:
-      - "5432:5432"     # Самое важное! <порт на твоем компе>:<порт внутри капсулы>
-                        # Теперь, стучась на localhost:5432, ты попадешь в базу
+      - "5432:5432"
     volumes:
-      - ./pg_data:/var/lib/postgresql/data # Чтобы данные не исчезли после выключения!
-                        # Мы говорим: "Сохраняй всё, что в базе, в папку pg_data у меня в проекте"
+      - ./pg_data:/var/lib/postgresql/data
+    networks:
+      - my_network
+
+  airflow:
+    build: .
+    image: my_airflow:latest
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    environment:
+      AIRFLOW_HOME: /opt/airflow
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://admin:root@db:5432/analytics_db
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+    networks:
+      - my_network
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  my_postgres_db:
+    driver: local
+  airflow_data:
+    driver: local
+
+networks:
+  my_network:
+    driver: bridge

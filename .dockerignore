@@ -1,0 +1,7 @@
+# Не копировать в контекст сборки образа Airflow
+pg_data/
+dags/logs/
+.git
+__pycache__
+*.pyc
+.env
