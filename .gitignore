@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+*.egg-info/
+.eggs/
+
+# Airflow
+logs/
+dags/__pycache__/
+dags/airflow.db
+dags/airflow.cfg
+
+# Postgres data (Docker volume)
+pg_data/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+*.swo
+
+# Env / secrets (если появятся)
+.env
+.env.local
